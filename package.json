@@ -1,0 +1,30 @@
+{
+  "name": "three-iges-loader",
+  "version": "1.0.0",
+  "description": "three.js IGES loader",
+  "main": "src/IGESLoader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex-marinov/three-iges-loader.git"
+  },
+  "keywords": [
+    "three.js",
+    "threejs",
+    "three",
+    "iges",
+    "loader",
+    "importer"
+  ],
+  "author": "Alex Marinov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alex-marinov/three-iges-loader/issues"
+  },
+  "homepage": "https://github.com/alex-marinov/three-iges-loader#readme",
+  "dependencies": {
+    "three": "^0.158.0"
+  }
+}
