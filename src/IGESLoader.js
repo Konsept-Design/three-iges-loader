@@ -28,7 +28,6 @@ import {
  *	});
  *
  *
- *
  */
 
 const scaleFactor = 1;
