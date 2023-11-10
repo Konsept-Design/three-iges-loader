@@ -6,7 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v3
         with:
@@ -21,7 +23,7 @@ jobs:
       - run: npm version patch -m "Bump version to %s [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: git push origin main
+      - run: git push origin HEAD
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm publish
