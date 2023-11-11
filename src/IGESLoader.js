@@ -18,7 +18,9 @@ import {
 /**
  * Description: A THREE loader for IGES files, as created by Solidworks and other CAD programs.
  *
- * IGES Version 6.0 - https://filemonger.com/specs/igs/devdept.com/version6.pdf
+ * https://wiki.eclipse.org/IGES_file_Specification
+ * https://web.archive.org/web/20120821190122/http://www.uspro.org/documents/IGES5-3_forDownload.pdf
+ *  * IGES Version 6.0 - https://filemonger.com/specs/igs/devdept.com/version6.pdf
  * More info on IGES see wiki page: https://en.wikipedia.org/wiki/IGES
  *
  * Useage:
@@ -28,22 +30,19 @@ import {
  *	});
  *
  *
+ *
  */
 
-const scaleFactor = 1;
+class IGESLoader extends Loader {
+  constructor(manager) {
+    super(manager);
 
-let fileURL = "";
+    this.fileURL = "";
+  }
 
-var IGESLoader = function (manager) {
-  Loader.call(this, manager);
-};
-
-IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
-  constructor: IGESLoader,
-
-  load: function (url, onLoad, onProgress, onError) {
+  load(url, onLoad, onProgress, onError) {
     var scope = this;
-    fileURL = url;
+    scope.fileURL = url;
 
     var loader = new FileLoader(this.manager);
     loader.setPath(this.path);
@@ -66,9 +65,9 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
       onProgress,
       onError
     );
-  },
+  }
 
-  parse: function (data) {
+  parse(data) {
     var Entity = function (attribute = { entityType: "" }, params = []) {
       this.type = attribute.entityType;
       this.attr = attribute;
@@ -370,9 +369,7 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
         var mesh = new Line(geom, material);
 
         mesh.position.set(0, 0, 0);
-        // mesh.rotation.set( - Math.PI / 2, 0, 0 ); //
-
-        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        mesh.rotation.set(-Math.PI / 2, 0, 0); //
 
         mesh.castShadow = true;
         mesh.receiveShadow = true;
@@ -455,7 +452,6 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
                 )
               );
             }
-            console.log("LINEAR PATH ENTITY - FORM 12 - Points ", points);
             break;
           /*
            *	WITNESS LINE ENTITY (TYPE 106, FORM 40)
@@ -485,9 +481,6 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
             }
             break;
 
-          /*
-           *   SIMPLE CLOSED PLANAR CURVE ENTITY (TYPE 106, FORM 63)
-           */
           case "63":
             for (var i = 0; i < entityParams[1]; i++) {
               points.push(
@@ -510,9 +503,7 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
         var mesh = new Line(geom, material);
 
         mesh.position.set(0, 0, 0);
-        // mesh.rotation.set( - Math.PI / 2, 0, 0 ); //
-
-        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        mesh.rotation.set(-Math.PI / 2, 0, 0); //
 
         mesh.castShadow = true;
         mesh.receiveShadow = true;
@@ -615,9 +606,7 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
         var mesh = new Line(geom, material);
 
         mesh.position.set(0, 0, 0);
-        // mesh.rotation.set( - Math.PI / 2, 0, 0 ); //
-
-        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        mesh.rotation.set(-Math.PI / 2, 0, 0); //
 
         mesh.castShadow = true;
         mesh.receiveShadow = true;
@@ -648,8 +637,7 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
         const mesh = new Points(geom, material);
 
         mesh.position.set(0, 0, 0);
-        // mesh.rotation.set( - Math.PI / 2, 0, 0 );
-        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        mesh.rotation.set(-Math.PI / 2, 0, 0);
 
         mesh.castShadow = true;
         mesh.receiveShadow = true;
@@ -792,9 +780,7 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
         var mesh = new Line(geom, material);
 
         mesh.position.set(0, 0, 0);
-        // mesh.rotation.set( - Math.PI / 2, 0, 0 ); //
-
-        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        mesh.rotation.set(-Math.PI / 2, 0, 0); //
 
         mesh.castShadow = true;
         mesh.receiveShadow = true;
@@ -971,7 +957,7 @@ IGESLoader.prototype = Object.assign(Object.create(Loader.prototype), {
     }
 
     return parseIges(data);
-  },
-});
+  }
+}
 
 export { IGESLoader };
