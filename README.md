@@ -5,6 +5,12 @@
 
 **IGESLoader** is an IGES file loader for Three.js.
 
+> [!WARNING]
+> This package is currently in active development and may not be stable. Use with caution.
+
+> [!NOTE]
+> Currently, only a limited number of 'entity' types are parsed (mainly to be able to display points/lines/curves).
+
 ## Install
 
 `npm install three-iges-loader three`
