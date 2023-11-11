@@ -224,12 +224,7 @@ class IGESLoader extends Loader {
       iges.parseParameter(paramSec);
       iges.parseTerminate(terminateSec);
 
-      //console.log("inside parseIges | All Entities:")
-      //console.log(iges.entities);
-
       var entities = iges.entities;
-      //console.log("Entities: ")
-      //console.log(new Set(entities.map((e) => parseInt(e.type)).sort()))
 
       var vertices = [];
       var groupCount = 0;
@@ -323,16 +318,9 @@ class IGESLoader extends Loader {
        *	7 		Y3 		Real 	Terminate point ordinate
        */
       function drawCArc(entity) {
-        //console.log("inside drawCArc")
-        //console.log(entity)
-
         var entityAttr = entity.attr;
-        //console.log("transMatrix: " + entityAttr["transMatrix"])
 
         var entityParams = entity.params;
-        //console.log("ZT ", entityParams[0], " X1 ", entityParams[1], " Y1 ", entityParams[2], " X2 ", entityParams[3], " Y2 ", entityParams[4], " X3 ", entityParams[5], " Y3 ", entityParams[6], )
-
-        //console.log(getBySequence(entities, entityAttr["transMatrix"]));
 
         const startVector = new Vector2(
           entityParams[3] - entityParams[1],
@@ -345,8 +333,6 @@ class IGESLoader extends Loader {
 
         const startAngle = startVector.angle();
         const endAngle = endVector.angle();
-
-        //console.log("Start Angle: ", startAngle, " End Angle: ", endAngle);
 
         const curve = new EllipseCurve(
           entityParams[1],
@@ -391,12 +377,7 @@ class IGESLoader extends Loader {
        *	1+N 	DE(N) 	Pointer Pointer to the DE of the last constituent entity
        */
       function drawCCurve(entity) {
-        //console.log("inside drawCCurve")
-        //console.log(entity)
-
         var entityAttr = entity.attr;
-        //console.log("" + entityAttr[""])
-
         var entityParams = entity.params;
       }
 
@@ -410,9 +391,6 @@ class IGESLoader extends Loader {
        *
        */
       function drawPath(entity) {
-        //console.log("inside drawPath")
-        //console.log(entity)
-
         var entityAttr = entity.attr;
         var entityParams = entity.params;
 
@@ -530,16 +508,12 @@ class IGESLoader extends Loader {
        *	9 		SIZE 	Real 	Size parameter for display symbol
        */
       function drawPlane(entity) {
-        //console.log("inside drawPlane")
-        //console.log(entity)
+        // TODO
       }
 
       //LINE ENTITY (TYPE 110, FORM 0)
       //LINE ENTITY (TYPE 110, FORMS 1-2)
       function drawLine(entity) {
-        //console.log("inside drawLine")
-        //console.log(entity)
-
         var entityAttr = entity.attr;
         var entityParams = entity.params;
 
@@ -616,9 +590,6 @@ class IGESLoader extends Loader {
 
       //116
       function drawPoint(entity) {
-        //console.log("inside drawPoint")
-        //console.log(entity)
-
         var entityParams = entity.params;
         var entityAttr = entity.attr;
 
@@ -667,9 +638,6 @@ class IGESLoader extends Loader {
        *
        */
       function drawTransMatrix(entity) {
-        //console.log("inside drawTransMatrix")
-        //console.log(entity)
-
         var entityParams = entity.params;
         var entityAttr = entity.attr;
 
@@ -687,11 +655,6 @@ class IGESLoader extends Loader {
               entity.attr["formNumber"]
             );
         }
-
-        //console.log("TransMatrix sequenceNumber: ", entityAttr["sequenceNumber"], "formNumber: ", entityAttr["formNumber"])
-        //console.log("R11 ", entityParams[0], " R12 ", entityParams[1], " R13 ", entityParams[2], " T1 ", entityParams[3])
-        //console.log("R21 ", entityParams[4], " R22 ", entityParams[5], " R23 ", entityParams[6], " T2 ", entityParams[7])
-        //console.log("R31 ", entityParams[8], " R32 ", entityParams[9], " R33 ", entityParams[10], " T3 ", entityParams[11])
       }
 
       /*
@@ -699,9 +662,6 @@ class IGESLoader extends Loader {
        *
        */
       function drawRBSplineCurve(entity) {
-        console.log("inside drawRBSplineCurve");
-        console.log(entity);
-
         var entityAttr = entity.attr;
         var entityParams = entity.params;
 
@@ -715,12 +675,8 @@ class IGESLoader extends Loader {
         var PROP3 = entityParams[2];
         var PROP4 = entityParams[2];
 
-        console.log("K: ", K, " M: ", M);
-
         var N = 1 + K - M;
-        console.log("N: ", N);
         var A = N + 2 * M;
-        console.log("A: ", A);
 
         switch (entityAttr["formNumber"].toString()) {
           /*
@@ -733,14 +689,6 @@ class IGESLoader extends Loader {
            *	5 		Hyperbolic arc
            */
           case "0":
-            console.log("PROP1: ", PROP1, " (0 = nonplanar, 1 = planar)");
-            console.log(
-              "PROP2: ",
-              PROP2,
-              " (0 = open curve, 1 = closed curve)"
-            );
-            console.log("PROP3: ", PROP3, " (0 = rational, 1 = polynomial)");
-            console.log("PROP4: ", PROP4, " (0 = nonperiodic, 1 = periodic)");
             for (var i = 0; i < K + 1; i++) {
               points.push(
                 new Vector3(
@@ -752,7 +700,6 @@ class IGESLoader extends Loader {
             }
             break;
           case "1":
-            //console.log(entityParams[0])
             for (var i = 0; i < K + 1; i++) {
               points.push(
                 new Vector3(
@@ -762,17 +709,14 @@ class IGESLoader extends Loader {
                 )
               );
             }
-            //points.push( new Vector3((parseFloat(entityParams[0])), parseFloat(entityParams[1]), parseFloat(entityParams[2]) ));
-            //points.push( new Vector3((parseFloat(entityParams[3])), parseFloat(entityParams[4]), parseFloat(entityParams[5]) ));
             break;
           default:
-            console.log(
-              "LINE ENTITY - TYPE 110 - Unsupported Form Number: ",
-              entity.attr["formNumber"]
-            );
+          // TODO
+          // console.log(
+          //   "LINE ENTITY - TYPE 110 - Unsupported Form Number: ",
+          //   entity.attr["formNumber"]
+          // );
         }
-
-        console.log(points);
 
         geom.setFromPoints(points);
 
@@ -789,12 +733,13 @@ class IGESLoader extends Loader {
       }
 
       //128 RATIONAL B-SPLINE SURFACE ENTITY
-      function drawRBSplineSurface(entity) {}
+      function drawRBSplineSurface(entity) {
+        // TODO
+      }
 
       //142 CURVE ON A PARAMETRIC SURFACE ENTITY
       function drawCurveOnPSurface(entity) {
-        //console.log("inside drawCurveOnPSurface")
-        //console.log(entity)
+        // TODO
       }
 
       /*
@@ -820,8 +765,6 @@ class IGESLoader extends Loader {
        *							entity (Curve on a Parametric Surface Entity)
        */
       function drawTPSurface(entity) {
-        //console.log("inside drawTPSurface")
-        //console.log(entity)
         // TODO
       }
 
@@ -866,8 +809,6 @@ class IGESLoader extends Loader {
        *	1+12*NS 	TEXT(NS) 	String 		Last text string
        */
       function drawGeneralNote(entity) {
-        //console.log("inside drawGeneralNote")
-        //console.log(entity)
         // TODO
       }
 
@@ -876,8 +817,6 @@ class IGESLoader extends Loader {
        *
        */
       function drawLeaderArrow(entity) {
-        //console.log("inside drawLeaderArrow")
-        //console.log(entity)
         // TODO
       }
 
@@ -885,8 +824,6 @@ class IGESLoader extends Loader {
        *	LINEAR DIMENSION ENTITY (TYPE 216)
        */
       function drawLinearDimension(entity) {
-        //console.log("inside drawLinearDimension")
-        //console.log(entity)
         // TODO
       }
 
@@ -905,14 +842,10 @@ class IGESLoader extends Loader {
        *							name shall be defaulted.
        */
       function drawColor(entity) {
-        //console.log("inside drawColor")
-        //console.log(entity)
         // TODO
       }
 
       function drawAInstance(entity) {
-        //console.log("inside drawAInstance")
-        //console.log(entity)
         // TODO
       }
 
@@ -931,8 +864,6 @@ class IGESLoader extends Loader {
 
 			*/
       function propertyEntity(entity) {
-        //console.log("inside propertyEntity")
-        //console.log(entity)
         // TODO
       }
 
@@ -944,7 +875,6 @@ class IGESLoader extends Loader {
     }
 
     function parseIgesString(str) {
-      // iges string (fortran) form: <length>H<str>
       try {
         var d = str.indexOf("H");
         if (d == -1) return null;
