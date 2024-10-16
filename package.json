@@ -4,9 +4,7 @@
   "description": "three.js IGES loader",
   "main": "src/IGESLoader.js",
   "scripts": {
-    "build": "tsup index.ts --format esm,cjs --dts",
-    "lint": "tsc",
-    "release": "pnpm run build && changeset publish",
+    "release": "changeset publish",
     "test": "jest",
     "test-verbose": "jest --verbose true --silent false"
   },
