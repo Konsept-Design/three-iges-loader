@@ -1,6 +1,6 @@
 {
   "name": "three-iges-loader",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "three.js IGES loader",
   "main": "src/IGESLoader.js",
   "scripts": {
