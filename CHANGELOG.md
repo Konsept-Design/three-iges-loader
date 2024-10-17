@@ -1,5 +1,11 @@
 # three-iges-loader
 
+## 1.2.2
+
+### Patch Changes
+
+- 9082105: README update
+
 ## 1.2.1
 
 ### Patch Changes
