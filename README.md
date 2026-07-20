@@ -33,7 +33,7 @@ src/three/          toThreeGroup() → THREE.Group
 IGESLoader.ts       FileLoader + parse + tessellate
 ```
 
-Full details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
+Full details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md) · Plan: [docs/IMPROVEMENT_PLAN.md](docs/IMPROVEMENT_PLAN.md)
 
 ## Install
 

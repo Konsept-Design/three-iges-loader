@@ -49,12 +49,13 @@ This repository is a **pnpm monorepo** implementing IGES → Three.js in layers.
 
 ## Out of scope (for now)
 
-Surface entities (128, 144, B-rep 186, etc.) live on the [ROADMAP](./ROADMAP.md) under Phase C/D.
+Surface entities (128, 144, B-rep 186, etc.) live on the [ROADMAP](./ROADMAP.md) under Phase C/D. Full sequencing, known parser bugs, and abstractions are in [IMPROVEMENT_PLAN.md](./IMPROVEMENT_PLAN.md).
 
 Optional future package: `iges-occt` using Open CASCADE WASM for full B-rep tessellation.
 
 ## AI / contributor entry points
 
 - [AGENTS.md](../AGENTS.md) — rules for automated contributors
+- [IMPROVEMENT_PLAN.md](./IMPROVEMENT_PLAN.md) — review, correctness fixes, full 2D/3D plan
 - [ENTITY_IMPLEMENTATION.md](./ENTITY_IMPLEMENTATION.md) — per-type checklist
 - [ROADMAP.md](./ROADMAP.md) — phased delivery plan
