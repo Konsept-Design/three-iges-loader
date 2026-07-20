@@ -3,9 +3,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { parseAndResolveIGES, parseIGES } from "../src/index.js";
-import { splitSections } from "../src/parse/sections.js";
+import { parseTerminateSection, splitSections } from "../src/parse/sections.js";
 import { parseGlobalSection } from "../src/parse/parseGlobal.js";
 import { splitParameterRecords } from "../src/parse/paramTokenizer.js";
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = (name: string) =>
@@ -53,12 +54,29 @@ describe("parseIGES", () => {
   });
 
   it("parses slot fixture with 6 geometry entities", () => {
-    const model = parseAndResolveIGES(fixtures("slot.iges"), { validateLineCounts: false });
+    const model = parseAndResolveIGES(fixtures("slot.iges"));
+    expect(model.warnings).toEqual([]);
     const kinds = model.geometry.map((g) => g.kind);
     expect(kinds.filter((k) => k === "point")).toHaveLength(2);
     expect(kinds.filter((k) => k === "circularArc")).toHaveLength(2);
     expect(kinds.filter((k) => k === "line")).toHaveLength(2);
   });
+
+  it("parses terminate counts and validates DE line count on slot", () => {
+    const model = parseIGES(fixtures("slot.iges"));
+    expect(model.terminate).toEqual({
+      startLineCount: 1,
+      globalLineCount: 4,
+      directoryLineCount: 12,
+      parameterLineCount: 6,
+    });
+    expect(model.warnings).toEqual([]);
+    expect(model.entities.size).toBe(6);
+
+    const sections = splitSections(fixtures("slot.iges"));
+    expect(parseTerminateSection(sections.terminate)).toEqual(model.terminate);
+  });
+
 
   it("parses arc fixture with correct radius", () => {
     const model = parseAndResolveIGES(fixtures("arc.iges"));
@@ -73,9 +91,23 @@ describe("parseIGES", () => {
 });
 
 describe("hollerith and delimiters", () => {
-  it("reads custom field delimiter from global section", () => {
+  it("keeps empty Global delimiter fields so later indices stay aligned", () => {
     const model = parseIGES(fixtures("slot.iges"));
-    expect(model.global.productIdFromSender).toContain("SLOT");
-    expect(model.global.fileName).toContain("slot.iges");
+    expect(model.global.productIdFromSender).toBe(
+      "three-iges-loader Wikipedia slot fixture"
+    );
+    expect(model.global.fileName).toBe("slot.iges");
+    expect(model.global.nativeSystemId).toBe("three-iges-loader");
+    expect(model.global.preprocessorVersion).toBe("three-iges-loader");
+    expect(model.global.integerBits).toBe(32);
+    expect(model.global.productIdForReceiver).toBe("SLOT");
+    expect(model.global.modelSpaceScale).toBe(1);
+    expect(model.global.unitsFlag).toBe(1);
+    expect(model.global.unitsName).toBe("INCH");
+    expect(model.global.author).toBe("Konsept Design / three-iges-loader");
+    expect(model.global.organization).toBe("Konsept Design");
+    expect(model.global.igesVersion).toBe(4);
+    expect(model.global.draftingStandard).toBe(0);
   });
 });
+

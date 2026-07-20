@@ -18,4 +18,16 @@ describe("paramTokenizer", () => {
     expect(fields[0]).toBe("116");
     expect(fields[1]).toBe("10.");
   });
+
+  it("preserves empty fields between delimiters", () => {
+    expect(tokenizeFields(",,foo", ",")).toEqual(["", "", "foo"]);
+    expect(tokenizeFields("a,,b", ",")).toEqual(["a", "", "b"]);
+  });
+
+  it("does not insert empty fields after hollerith tokens", () => {
+    expect(tokenizeFields("4HSLOT,9Hslot.iges", ",")).toEqual(["4HSLOT", "9Hslot.iges"]);
+    expect(tokenizeFields(",,4HSLOT,9Hslot.iges", ",")).toEqual(["", "", "4HSLOT", "9Hslot.iges"]);
+  });
 });
+
+

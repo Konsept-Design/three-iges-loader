@@ -58,11 +58,15 @@ function tryReadHollerithAt(data: string, start: number): { raw: string; length:
 
 /**
  * Tokenize one parameter record into fields using the field delimiter.
+ *
+ * Empty fields are preserved (`,,foo` → `["", "", "foo"]`) so Global / PD
+ * parameter indices stay aligned with the IGES spec.
  */
 export function tokenizeFields(record: string, fieldDelimiter: string): string[] {
   const fields: string[] = [];
   let current = "";
   let i = 0;
+  let endedWithDelimiter = false;
 
   while (i < record.length) {
     const hollerith = tryReadHollerithAt(record, i);
@@ -73,6 +77,14 @@ export function tokenizeFields(record: string, fieldDelimiter: string): string[]
       }
       fields.push(hollerith.raw);
       i += hollerith.length;
+      // Hollerith tokens are complete fields; consume the trailing delimiter
+      // without pushing an extra empty value.
+      if (record.startsWith(fieldDelimiter, i)) {
+        i += fieldDelimiter.length;
+        endedWithDelimiter = true;
+      } else {
+        endedWithDelimiter = false;
+      }
       continue;
     }
 
@@ -80,15 +92,20 @@ export function tokenizeFields(record: string, fieldDelimiter: string): string[]
       fields.push(current);
       current = "";
       i += fieldDelimiter.length;
+      endedWithDelimiter = true;
       continue;
     }
 
     current += record[i];
     i += 1;
+    endedWithDelimiter = false;
   }
 
-  fields.push(current);
-  return fields.filter((f) => f.length > 0);
+  if (current.length > 0 || endedWithDelimiter || fields.length === 0) {
+    fields.push(current);
+  }
+
+  return fields;
 }
 
 /**

@@ -44,7 +44,7 @@ describe("IGESLoader", () => {
   });
 
   it("toThreeGroup matches loader output child count", () => {
-    const resolved = parseAndResolveIGES(fixture("slot.iges"), { validateLineCounts: false });
+    const resolved = parseAndResolveIGES(fixture("slot.iges"));
     const group = toThreeGroup(resolved);
     expect(group.children.length).toBe(resolved.geometry.length);
   });
