@@ -65,3 +65,11 @@ pnpm build
 3. [docs/ROADMAP.md](docs/ROADMAP.md)
 4. [CONTRIBUTING.md](CONTRIBUTING.md) — human contributors
 5. [RELEASING.md](RELEASING.md) — versioning & npm (maintainers)
+
+## Cursor Cloud specific instructions
+
+Standard install/test/build/run commands live in the **Commands** section above; nothing here overrides them.
+
+- **Node version:** This repo requires Node **>=24** (`engines`), but the base VM's default `node` on `PATH` (`/exec-daemon/node`) is **v22**. An nvm-managed Node 24 is installed and `~/.bashrc` prepends it so **interactive/login shells get Node 24 automatically**. If you run a command and hit an engine/version error, you're in a non-login shell using v22 — fix it in that shell with `export PATH="$HOME/.nvm/versions/node/$(nvm version 24)/bin:$PATH"` (or start `bash -l`). `pnpm` (10.33.4) is provided via corepack on the Node 24 install.
+- **Services:** This is a **library monorepo — no backend/DB/network services.** End-to-end verification = `pnpm test` (Vitest: `iges-core` unit + loader integration). `pnpm build` uses tsup.
+- **Example viewer:** `pnpm dev:example` runs a Vite + Three.js browser demo on **http://localhost:3000** (dropdown switches IGES fixtures: point/line/slot/arc). It requires WebGL. In the headless VM, Chrome must be launched with `--use-angle=swiftshader` for software WebGL, otherwise the canvas is black with `WebGLRenderer: A WebGL context could not be created` in the console.
