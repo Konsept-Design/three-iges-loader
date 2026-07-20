@@ -61,7 +61,8 @@ pnpm build
 ## Entry documents
 
 1. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-2. [docs/ENTITY_IMPLEMENTATION.md](docs/ENTITY_IMPLEMENTATION.md)
-3. [docs/ROADMAP.md](docs/ROADMAP.md)
-4. [CONTRIBUTING.md](CONTRIBUTING.md) — human contributors
-5. [RELEASING.md](RELEASING.md) — versioning & npm (maintainers)
+2. [docs/IMPROVEMENT_PLAN.md](docs/IMPROVEMENT_PLAN.md) — bugs, abstractions, full 2D/3D plan
+3. [docs/ENTITY_IMPLEMENTATION.md](docs/ENTITY_IMPLEMENTATION.md)
+4. [docs/ROADMAP.md](docs/ROADMAP.md)
+5. [CONTRIBUTING.md](CONTRIBUTING.md) — human contributors
+6. [RELEASING.md](RELEASING.md) — versioning & npm (maintainers)
