@@ -13,16 +13,18 @@ Test corpus: `test/fixtures/` (including Wikipedia **slot**), `test/models/`, an
 
 ## Phase 0 — Parser correctness & test harden 🚧
 
-Must land before expanding entity coverage. See IMPROVEMENT_PLAN § Critical bugs.
+Must land before expanding entity coverage. See IMPROVEMENT_PLAN § Critical bugs / Sprint 1.
 
 | Item | Status |
 |------|--------|
-| Fix Terminate section field slices | ⬜ |
-| Keep empty Global delimiter fields (index alignment) | ⬜ |
+| Fix Terminate section field slices (`S/G/D/P` + 7-digit counts) | ✅ |
+| Keep empty Global delimiter fields (index alignment) | ✅ |
+| Correct slot fixture Hollerith lengths for Global tests | ✅ |
 | Preserve P-section DE back-pointer; map by `parameterDataPointer` | ⬜ |
+| Fix Global leading-Hollerith delimiter off-by-one | ⬜ |
 | Fix Type 126 weight/control indexing + NURBS fixture | ⬜ |
 | Transform identity invariant + cycle guard + warning dedupe | ⬜ |
-| Unit tests for tokenizer / Global / DE↔PD / transforms / NURBS | ⬜ |
+| Unit tests for tokenizer / Global / DE↔PD / transforms / NURBS | 🚧 partial |
 
 ---
 

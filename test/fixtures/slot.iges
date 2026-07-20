@@ -1,8 +1,8 @@
                                                                         S0000001
-,,31Hthree-iges-loader Wikipedia slot fixture,4HSLOT,13Hslot.iges,      G0000001
-31Hthree-iges-loader,32,38,6,38,15,6,38,15,                             G0000002
+,,40Hthree-iges-loader Wikipedia slot fixture,9Hslot.iges,              G0000001
+17Hthree-iges-loader,17Hthree-iges-loader,32,38,6,38,15,                G0000002
 4HSLOT,1.,1,4HINCH,8,0.08,13H871006.192927,1.E-06,6.,                   G0000003
-31HKonsept Design / three-iges-loader,4,0;                              G0000004
+34HKonsept Design / three-iges-loader,14HKonsept Design,4,0;            G0000004
      116       1       0       0       0       0       0       0        D0000001
      116       0       0       1       0                                D0000002
      116       2       0       0       0       0       0       0        D0000003

@@ -14,6 +14,22 @@ The monorepo layering is sound: `iges-core` (no `three`) → `toThreeGroup` → 
 
 ---
 
+## Sprint 1 (current) — P0 terminate + empty Global fields
+
+**Branch intent:** Land the first correctness slice so Global scale/units and T-section validation are trustworthy on the slot fixture.
+
+| Status | Item |
+|--------|------|
+| ✅ | Fix `parseTerminateSection` (8-col `S/G/D/P` + count fields) |
+| ✅ | Keep empty fields in `tokenizeFields` **and** skip delimiter after Hollerith (was inserting ghost empties) |
+| ✅ | Correct slot fixture Hollerith string lengths + Global field order |
+| ✅ | Unit tests: terminate widths, `,,foo` tokens, Hollerith boundaries, slot Global alignment |
+| ⬜ | Next PR: P-section DE back-pointer + DE↔PD mapping |
+
+**Exit criteria for this sprint:** `parseIGES(slot)` reports correct terminate counts, `modelSpaceScale === 1`, `unitsFlag === 1`, `unitsName === "INCH"`, and DE count validation passes with default `validateLineCounts: true`.
+
+---
+
 ## Current state (as of this review)
 
 | Area | Status |
@@ -43,15 +59,16 @@ These are correctness defects in code that already claims to work.
 
 ### P0 — Parser correctness
 
-| # | Issue | Location | Fix |
-|---|--------|----------|-----|
-| 1 | Terminate section counts always zero | `parse/sections.ts` `slice(8,8)` etc. | Use `slice(8,16)`, `slice(16,24)`, `slice(24,32)`; test against fixtures |
-| 2 | Empty Global fields dropped → all G indices shift | `paramTokenizer.ts` `fields.filter(f => f.length > 0)` | Keep empty fields; fix Global tests to assert real `productId` / `modelSpaceScale` / units |
-| 3 | P-section DE back-pointer discarded; PD mapped by array index | `sections.ts` `slice(0,64)`; `parseParameters.ts` `dePointer: null` | Preserve cols 65–72 per P-line; map via `de.parameterDataPointer`; fixture with DE order ≠ PD order |
-| 4 | Type 126 weight/control index off-by-one | `decoders/type126.ts` `weightStart = 7+K+M` | Spec: knots then weights at `8+K+M`; add dedicated NURBS fixture + eval tests |
-| 5 | Warnings duplicated in `parseAndResolveIGES` | `parseIGES.ts` + `resolveReferences.ts` | Merge once |
-| 6 | `applyWorldTransform` leaves `transform` on point/line | `resolveReferences.ts` | Always bake coords and set `IDENTITY_TRANSFORM` (document invariant) |
-| 7 | Transform chain can recurse forever | `resolveTransform` | Path `Set` + warning on cycle |
+| # | Issue | Location | Fix (verified) | Sprint |
+|---|--------|----------|----------------|--------|
+| 1 | Terminate counts always zero | `parse/sections.ts` | Each count is an **8-column** field: section letter + 7-digit count. Parse `slice(0,8)`, `slice(8,16)`, `slice(16,24)`, `slice(24,32)` and **skip the leading `S/G/D/P`** before `parseInt` (zero- or space-padded). Plain `slice(8,8)` / `slice(16,8)` are empty ranges. | **1** |
+| 2 | Empty Global fields dropped / ghost empties after Hollerith | `paramTokenizer.ts` | (a) Stop filtering empty fields. (b) After a Hollerith token, consume the trailing field delimiter without pushing an extra `""`. (c) Fix **slot fixture** Hollerith lengths and Global parameter order — wrong `nH` counts previously swallowed commas and made weak tests pass by accident. | **1** |
+| 2b | Leading Hollerith delimiter strips param 1 | `parseGlobal.ts` `extractLeadingHollerith` | When Global starts with `1H,`, body indices are off-by-one vs default `,,` form. Re-index or prepend a placeholder token after extraction. | 2+ |
+| 3 | P-section DE back-pointer discarded; PD mapped by array index | `sections.ts` `slice(0,64)`; `parseParameters.ts` `dePointer: null` | Preserve cols 65–72 per P-line; map via `de.parameterDataPointer`; fixture with DE order ≠ PD order | 2 |
+| 4 | Type 126 weight/control index off-by-one | `decoders/type126.ts` `weightStart = 7+K+M` | Spec: knots then weights at `8+K+M`; add dedicated NURBS fixture + eval tests | 3 |
+| 5 | Warnings duplicated in `parseAndResolveIGES` | `parseIGES.ts` + `resolveReferences.ts` | Merge once | 4 |
+| 6 | `applyWorldTransform` leaves `transform` on point/line | `resolveReferences.ts` | Always bake coords and set `IDENTITY_TRANSFORM` (document invariant) | 4 |
+| 7 | Transform chain can recurse forever | `resolveTransform` | Path `Set` + warning on cycle | 4 |
 
 ### P1 — Three.js wireframe fidelity
 
@@ -166,15 +183,15 @@ Stops every decoder repeating `deSequence` / `form` / `colorNumber` / `level`.
 
 Tests to add (minimum):
 
-- `parseTerminateSection` field widths
-- `tokenizeFields(",,foo")` → `["","","foo"]`
-- Global: `unitsFlag`, `modelSpaceScale`, `igesVersion` on slot
-- DE↔PD reorder fixture
-- NURBS: degree-1 line + circular NURBS endpoints/mid
-- `multiplyTransforms` + 124 chain + cycle
-- `applyWorldTransform` identity invariant
-- Negative: missing T, missing PD, malformed real
-- Loader: Z-up rotation, scale, colors, dispose, `userData.iges`
+- [x] `parseTerminateSection` field widths *(Sprint 1)*
+- [x] `tokenizeFields(",,foo")` → `["","","foo"]` *(Sprint 1)*
+- [x] Global: `unitsFlag`, `modelSpaceScale`, `igesVersion` on slot *(Sprint 1)*
+- [ ] DE↔PD reorder fixture
+- [ ] NURBS: degree-1 line + circular NURBS endpoints/mid
+- [ ] `multiplyTransforms` + 124 chain + cycle
+- [ ] `applyWorldTransform` identity invariant
+- [ ] Negative: missing T, missing PD, malformed real
+- [ ] Loader: Z-up rotation, scale, colors, dispose, `userData.iges`
 
 ### Phase B2 — Complete wireframe / drafting
 
@@ -234,8 +251,8 @@ Loader option: `solidBackend: "none" \| "native-approx" \| "occt"`.
 
 Each PR should stay one concern (per AGENTS.md).
 
-1. **P0 terminate + empty fields + Global tests**
-2. **P0 P-section back-pointer + DE↔PD mapping + reorder fixture**
+1. **P0 terminate + empty fields + Global tests** ← **Sprint 1 (this PR)**
+2. **P0 P-section back-pointer + DE↔PD mapping + reorder fixture** *(also fix Global leading-Hollerith delimiter index if touched)*
 3. **P0 Type 126 + NURBS unit tests + fixture**
 4. **P0 resolve: transforms identity, cycles, warning dedupe**
 5. **Abstractions: ParamCursor, baseFromContext, registry unify, structured warnings**
@@ -263,7 +280,7 @@ Each PR should stay one concern (per AGENTS.md).
 | Corpus | Growing | Wikipedia slot, IGES X-files, vendor samples in `test/models/` |
 | Peer matrix | CI | `three@0.160` and `three@0.185` |
 
-Fixture rule: every new entity type **must** ship a minimal fixture and decoder assertions (existing AGENTS rule).
+Fixture rule: every new entity type **must** ship a minimal fixture and decoder assertions (existing AGENTS rule). When editing Global strings in fixtures, **verify Hollerith counts** (`nH` length must equal the payload character count).
 
 ---
 

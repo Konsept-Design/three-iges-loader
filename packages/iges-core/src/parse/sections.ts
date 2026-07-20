@@ -83,6 +83,13 @@ function normalizeSectionId(char: string, line: string): SectionId | null {
   return null;
 }
 
+/**
+ * Parse Terminate (T) section counts.
+ *
+ * IGES 5.3 packs four 8-column fields in columns 1–32:
+ * `S`/`G`/`D`/`P` + a 7-character (often zero-padded) line count.
+ * Example: `S0000001G0000004D0000012P0000006`
+ */
 export function parseTerminateSection(text: string): {
   startLineCount: number;
   globalLineCount: number;
@@ -90,9 +97,18 @@ export function parseTerminateSection(text: string): {
   parameterLineCount: number;
 } {
   return {
-    startLineCount: parseInt(text.slice(0, 8), 10) || 0,
-    globalLineCount: parseInt(text.slice(8, 8), 10) || 0,
-    directoryLineCount: parseInt(text.slice(16, 8), 10) || 0,
-    parameterLineCount: parseInt(text.slice(24, 8), 10) || 0,
+    startLineCount: parseTerminateCountField(text, 0),
+    globalLineCount: parseTerminateCountField(text, 8),
+    directoryLineCount: parseTerminateCountField(text, 16),
+    parameterLineCount: parseTerminateCountField(text, 24),
   };
+}
+
+function parseTerminateCountField(text: string, offset: number): number {
+  const field = text.slice(offset, offset + 8);
+  if (field.length === 0) return 0;
+  // Skip the section letter when present (S/G/D/P); accept digit-only legacy fields.
+  const digits = /^[SGDP]/i.test(field) ? field.slice(1) : field;
+  const value = parseInt(digits.trim(), 10);
+  return Number.isFinite(value) ? value : 0;
 }
