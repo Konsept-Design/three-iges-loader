@@ -29,5 +29,3 @@ describe("paramTokenizer", () => {
     expect(tokenizeFields(",,4HSLOT,9Hslot.iges", ",")).toEqual(["", "", "4HSLOT", "9Hslot.iges"]);
   });
 });
-
-

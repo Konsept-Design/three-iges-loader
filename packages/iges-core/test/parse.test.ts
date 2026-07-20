@@ -7,7 +7,6 @@ import { parseTerminateSection, splitSections } from "../src/parse/sections.js";
 import { parseGlobalSection } from "../src/parse/parseGlobal.js";
 import { splitParameterRecords } from "../src/parse/paramTokenizer.js";
 
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = (name: string) =>
   readFileSync(join(__dirname, "../../../test/fixtures", name), "utf8");
@@ -77,7 +76,6 @@ describe("parseIGES", () => {
     expect(parseTerminateSection(sections.terminate)).toEqual(model.terminate);
   });
 
-
   it("parses arc fixture with correct radius", () => {
     const model = parseAndResolveIGES(fixtures("arc.iges"));
     const arc = model.geometry.find((g) => g.kind === "circularArc");
@@ -93,9 +91,7 @@ describe("parseIGES", () => {
 describe("hollerith and delimiters", () => {
   it("keeps empty Global delimiter fields so later indices stay aligned", () => {
     const model = parseIGES(fixtures("slot.iges"));
-    expect(model.global.productIdFromSender).toBe(
-      "three-iges-loader Wikipedia slot fixture"
-    );
+    expect(model.global.productIdFromSender).toBe("three-iges-loader Wikipedia slot fixture");
     expect(model.global.fileName).toBe("slot.iges");
     expect(model.global.nativeSystemId).toBe("three-iges-loader");
     expect(model.global.preprocessorVersion).toBe("three-iges-loader");
@@ -110,4 +106,3 @@ describe("hollerith and delimiters", () => {
     expect(model.global.draftingStandard).toBe(0);
   });
 });
-
